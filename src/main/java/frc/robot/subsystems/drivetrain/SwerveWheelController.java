@@ -1,23 +1,22 @@
 package frc.robot.subsystems.drivetrain;
 
 import frc.robot.output.commands.drivetrain.TeleopDrive;
-import frc.robot.subsystems.drivetrain.SwerveWheel;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import viking.controllers.SwerveWheelDrive;
-import viking.controllers.SwerveWheelDrive.SwerveWheelDriveType;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class SwerveWheelController extends SubsystemBase implements SwerveDrivetrainConstants {
 
     private static SwerveWheelController instance = null;
 
-    private SwerveWheelDrive frontRightDrive = null;
-    private SwerveWheelDrive frontLeftDrive = null;
-    private SwerveWheelDrive backRightDrive = null;
-    private SwerveWheelDrive backLeftDrive = null;
+    private CANSparkMax frontRightDrive = null;
+    private CANSparkMax frontLeftDrive = null;
+    private CANSparkMax backRightDrive = null;
+    private CANSparkMax backLeftDrive = null;
     
     private SwerveWheel frontRight = null;
     private SwerveWheel frontLeft = null;
@@ -34,15 +33,17 @@ public class SwerveWheelController extends SubsystemBase implements SwerveDrivet
     
     private SwerveWheelController(){
 
-        frontRightDrive = new SwerveWheelDrive(SwerveWheelDriveType.TalonSRX, frontRightDriveID, true);
-        frontLeftDrive = new SwerveWheelDrive(SwerveWheelDriveType.VictorSPX, frontLeftDriveID, false);
-        backRightDrive = new SwerveWheelDrive(SwerveWheelDriveType.VictorSPX, backRightDriveID, true);
-        backLeftDrive = new SwerveWheelDrive(SwerveWheelDriveType.Spark, backLeftDriveID, false);
+        frontRightDrive = new CANSparkMax(frontRightDriveID, MotorType.kBrushless);
+        frontRightDrive.setInverted(true);
+        frontLeftDrive = new CANSparkMax(frontLeftDriveID, MotorType.kBrushless);
+        backRightDrive = new CANSparkMax(backRightDriveID, MotorType.kBrushless);
+        backRightDrive.setInverted(true);
+        backLeftDrive = new CANSparkMax(backLeftDriveID, MotorType.kBrushless);
 
-        frontRight = new SwerveWheel(frontRightDrive, frontRightTurnTalonID, frontRightEncoderID, frontRightEncoderOffset, "Front Right");
-        frontLeft = new SwerveWheel(frontLeftDrive, frontLeftTurnTalonID, frontLeftEncoderID, frontLeftEncoderOffset, "Front Left");
-        backRight = new SwerveWheel(backRightDrive, backRightTurnTalonID, backRightEncoderID, backRightEncoderOffset, "Back Right");
-        backLeft = new SwerveWheel(backLeftDrive, backLeftTurnTalonID, backLeftEncoderID, backLeftEncoderOffset, "Back Left");
+        frontRight = new SwerveWheel(frontRightDrive, frontRightTurnID, frontRightEncoderID, frontRightEncoderOffset, "Front Right");
+        frontLeft = new SwerveWheel(frontLeftDrive, frontLeftTurnID, frontLeftEncoderID, frontLeftEncoderOffset, "Front Left");
+        backRight = new SwerveWheel(backRightDrive, backRightTurnID, backRightEncoderID, backRightEncoderOffset, "Back Right");
+        backLeft = new SwerveWheel(backLeftDrive, backLeftTurnID, backLeftEncoderID, backLeftEncoderOffset, "Back Left");
 
         try {
             gyro = new AHRS(SPI.Port.kMXP); 

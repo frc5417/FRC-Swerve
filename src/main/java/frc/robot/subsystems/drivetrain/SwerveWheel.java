@@ -1,24 +1,23 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import viking.controllers.SwerveWheelDrive;
 
 public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstants {
 
 	public String name;
 
-	private TalonSRX steerMotor;
+	private CANSparkMax steerMotor;
 	private AnalogInput absEnc;
-	private SwerveWheelDrive drive;
+	private CANSparkMax drive;
 
 	private int countsWhenFrwd;
 
-	public SwerveWheel(SwerveWheelDrive drive, int m_steer, int analogEnc, int zeroOffset,
+	public SwerveWheel(CANSparkMax drive, int m_steer, int analogEnc, int zeroOffset,
 					   String name) {
 		super(new PIDController(kP, kI, kD));
 
@@ -28,18 +27,15 @@ public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstan
 
 		countsWhenFrwd = zeroOffset;
 
-		steerMotor = new TalonSRX(m_steer);
+		steerMotor = new CANSparkMax(m_steer, MotorType.kBrushless);
 		absEnc = new AnalogInput(analogEnc);
 
 		// Reset all of the settings on startup
-		steerMotor.configFactoryDefault();
-
-		// Set the feedback device for the steering (turning) Talon SRX
-		steerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+		steerMotor.restoreFactoryDefaults();
 
 		// Set the current quadrature position relative to the analog position to make sure motor
 		// has 0 position on startup
-		steerMotor.setSelectedSensorPosition(getAbsAngleDeg() * QUAD_COUNTS_PER_ROT / 180);
+		steerMotor.getEncoder().setPosition(getAbsAngleDeg() * QUAD_COUNTS_PER_ROT / 180);
 
 		// Set the input range of the PIDF so that it will only accept angles between -180 to 180
 		// and set it to continuous
@@ -56,11 +52,11 @@ public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstan
 
 	// Get current ticks
 	public int getTicks() {
-		return (int)steerMotor.getSelectedSensorPosition();
+		return (int)steerMotor.getEncoder().getPosition();
 	}
 
 	public void setSpeed(double speed) {
-		drive.setSpeed(speed);
+		drive.set(speed);
 	}
 
 	// Convert ticks to angle bound from -180 to 180
@@ -83,6 +79,6 @@ public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstan
 
 	@Override
 	protected void useOutput(double output, double setpoint) {
-		steerMotor.set(ControlMode.PercentOutput, output);
+		steerMotor.set(output);
 	}
 }
