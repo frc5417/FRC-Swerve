@@ -2,11 +2,12 @@ package frc.robot.subsystems.drivetrain;
 
 import frc.robot.output.commands.drivetrain.TeleopDrive;
 
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class SwerveWheelController extends SubsystemBase implements SwerveDrivetrainConstants {
@@ -35,10 +36,14 @@ public class SwerveWheelController extends SubsystemBase implements SwerveDrivet
 
         frontRightDrive = new CANSparkMax(frontRightDriveID, MotorType.kBrushless);
         frontRightDrive.setInverted(true);
+        frontRightDrive.setIdleMode(IdleMode.kBrake);
         frontLeftDrive = new CANSparkMax(frontLeftDriveID, MotorType.kBrushless);
+        frontLeftDrive.setIdleMode(IdleMode.kBrake);
         backRightDrive = new CANSparkMax(backRightDriveID, MotorType.kBrushless);
         backRightDrive.setInverted(true);
+        backRightDrive.setIdleMode(IdleMode.kBrake);
         backLeftDrive = new CANSparkMax(backLeftDriveID, MotorType.kBrushless);
+        backLeftDrive.setIdleMode(IdleMode.kBrake);
 
         frontRight = new SwerveWheel(frontRightDrive, frontRightTurnID, frontRightEncoderID, frontRightEncoderOffset, "Front Right");
         frontLeft = new SwerveWheel(frontLeftDrive, frontLeftTurnID, frontLeftEncoderID, frontLeftEncoderOffset, "Front Left");
@@ -46,7 +51,7 @@ public class SwerveWheelController extends SubsystemBase implements SwerveDrivet
         backLeft = new SwerveWheel(backLeftDrive, backLeftTurnID, backLeftEncoderID, backLeftEncoderOffset, "Back Left");
 
         try {
-            gyro = new AHRS(SPI.Port.kMXP); 
+            gyro = new AHRS(SerialPort.Port.kMXP); 
             gyroEnabled = true;
         } catch (RuntimeException ex ) {
             System.out.println("--------------");

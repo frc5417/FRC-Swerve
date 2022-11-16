@@ -2,6 +2,11 @@ package frc.robot.subsystems.drivetrain;
 
 public interface SwerveDrivetrainConstants {
 
+	// encoders fixed
+	// need to do PID
+	// test CAN
+	// verify gyro
+
 	// Length and Width of robot in inches
 	public final double L = 25;
 	public final double W = 27;
@@ -19,18 +24,18 @@ public interface SwerveDrivetrainConstants {
 	public final int frontLeftTurnID = 10;
 	public final int frontRightTurnID = 20;
 	public final int backLeftTurnID = 30;
-	public final int backRightTurnID = 40;
+	public final int backRightTurnID = 41;
 
 	// IDs for Drive Motors
 	public final int frontLeftDriveID = 11;
 	public final int frontRightDriveID = 21;
 	public final int backLeftDriveID = 31;
-	public final int backRightDriveID = 41;
+	public final int backRightDriveID = 40; // todo: flip 41 and 40 (to match)
 
 	// Analog Encoder ID
-	public final int frontLeftEncoderID = 0;
-	public final int frontRightEncoderID = 1;
-	public final int backLeftEncoderID = 2;
+	public final int frontLeftEncoderID = 1;
+	public final int frontRightEncoderID = 2;
+	public final int backLeftEncoderID = 0;
 	public final int backRightEncoderID = 3;
 
 	// Offset of analog to make encoders face forward

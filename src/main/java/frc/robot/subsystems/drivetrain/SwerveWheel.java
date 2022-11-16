@@ -1,10 +1,11 @@
 package frc.robot.subsystems.drivetrain;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 
 public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstants {
@@ -12,7 +13,7 @@ public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstan
 	public String name;
 
 	private CANSparkMax steerMotor;
-	private AnalogInput absEnc;
+	private PWM absEnc;
 	private CANSparkMax drive;
 
 	private int countsWhenFrwd;
@@ -28,10 +29,11 @@ public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstan
 		countsWhenFrwd = zeroOffset;
 
 		steerMotor = new CANSparkMax(m_steer, MotorType.kBrushless);
-		absEnc = new AnalogInput(analogEnc);
+		absEnc = new PWM(analogEnc);
 
 		// Reset all of the settings on startup
 		steerMotor.restoreFactoryDefaults();
+		steerMotor.setIdleMode(IdleMode.kBrake);
 
 		// Set the current quadrature position relative to the analog position to make sure motor
 		// has 0 position on startup
@@ -47,7 +49,7 @@ public class SwerveWheel extends PIDSubsystem implements SwerveDrivetrainConstan
 
 	// Get the current angle of the analog encoder
 	private int getAbsAngleDeg() {
-		return (int)(180 * (absEnc.getValue() - countsWhenFrwd) / 4096);
+		return (int)(180 * (absEnc.getPosition() - countsWhenFrwd) / 4096);
 	}
 
 	// Get current ticks
